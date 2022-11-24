@@ -120,7 +120,7 @@ public class ConsultaPolizasService {
                         ResponseEntity<String> resultMapDatosPoliza = restTemplate.postForEntity(urlPolizas, bodyGetPoliza, String.class);
                         if (resultMapDatosPoliza != null && resultMapDatosPoliza.getStatusCode().value() == 200) {
                             mapDatosPoliza = new ObjectMapper().readValue(resultMapDatosPoliza.getBody(), Map.class);
-                            if (mapDatosPoliza.get("codigoMensaje").equals("CODSF1002") && mapDatosPoliza.get("Products") != null) {
+                            if (mapDatosPoliza.get("codigoMensaje").equals("CODSF1000") && mapDatosPoliza.get("Products") != null) {
 
 
                                 PolizasDto objPoliza = null;
@@ -163,7 +163,7 @@ public class ConsultaPolizasService {
                                     );
                                     if (resultMapDatosPolizaDetalle != null && resultMapDatosPolizaDetalle.getStatusCode().value() == 200) {
                                         mapDatosPolizaDetalle = new ObjectMapper().readValue(resultMapDatosPolizaDetalle.getBody(), Map.class);
-                                        if (mapDatosPolizaDetalle.get("codigoMensaje").equals("CODSF1002") && mapDatosPolizaDetalle.get("Poliza") != null) {
+                                        if (mapDatosPolizaDetalle.get("codigoMensaje").equals("CODSF1000") && mapDatosPolizaDetalle.get("Poliza") != null) {
 
                                             List<Map<String, Object>> lstMapPolizaDetalle = oMapper.convertValue(mapDatosPolizaDetalle.get("Poliza"), ArrayList.class);
                                             Map<String, Object> objMapPolizaDetalle = oMapper.convertValue(lstMapPolizaDetalle.get(0), Map.class);
@@ -359,7 +359,7 @@ public class ConsultaPolizasService {
             );
             if (resultMapDatosPolizaDetalle != null && resultMapDatosPolizaDetalle.getStatusCode().value() == 200) {
                 mapDatosPolizaDetalle = new ObjectMapper().readValue(resultMapDatosPolizaDetalle.getBody(), Map.class);
-                if (mapDatosPolizaDetalle.get("codigoMensaje").equals("CODSF1002") && mapDatosPolizaDetalle.get("Poliza")!=null) {
+                if (mapDatosPolizaDetalle.get("codigoMensaje").equals("CODSF1000") && mapDatosPolizaDetalle.get("Poliza")!=null) {
                     List<Map<String, Object>> lstMapPolizaDetalle = oMapper.convertValue(mapDatosPolizaDetalle.get("Poliza"), ArrayList.class);
                     Map<String, Object> objMapPolizaDetalle = oMapper.convertValue(lstMapPolizaDetalle.get(0), Map.class);
                     if (objMapPolizaDetalle.get("ArchivoBase64") != null && !objMapPolizaDetalle.get("ArchivoBase64").toString().trim().equals("")) {
