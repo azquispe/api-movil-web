@@ -19,6 +19,16 @@ public class PolizasDto {
        private String montoPrima;
        private String precio;
 
+       private Boolean tieneDocumentoPoliza;
+
+       public Boolean getTieneDocumentoPoliza() {
+              return tieneDocumentoPoliza;
+       }
+
+       public void setTieneDocumentoPoliza(Boolean tieneDocumentoPoliza) {
+              this.tieneDocumentoPoliza = tieneDocumentoPoliza;
+       }
+
        public String getPolizaId() {
               return polizaId;
        }

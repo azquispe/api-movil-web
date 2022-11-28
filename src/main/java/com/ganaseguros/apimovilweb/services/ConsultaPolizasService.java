@@ -184,6 +184,8 @@ public class ConsultaPolizasService {
                                             objPoliza.setNumeroOperacion(objMapPolizaDetalle.get("NroOperacion") != null ? objMapPolizaDetalle.get("NroOperacion").toString() : "-");
                                             objPoliza.setEstado(objMapPolizaDetalle.get("Status") != null ? objMapPolizaDetalle.get("Status").toString() : "-");
                                             objPoliza.setMontoPrima(objMapPolizaDetalle.get("PremiumAmount") != null ? objMapPolizaDetalle.get("PremiumAmount").toString() : "-");
+                                            objPoliza.setTieneDocumentoPoliza((objMapPolizaDetalle.get("ArchivoBase64") != null && !objMapPolizaDetalle.get("ArchivoBase64").toString().trim().equals("")) ? true : false);
+
 
                                         }else{
                                             res.setCodigo(ConstDiccionarioMensaje.CODMW2002);

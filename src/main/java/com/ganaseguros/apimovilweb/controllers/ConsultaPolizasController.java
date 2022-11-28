@@ -32,7 +32,7 @@ public class ConsultaPolizasController {
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
         if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
-            response.put("datos_poliza", res.getElementoGenerico());
+            response.put("datosPoliza", res.getElementoGenerico());
 
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
