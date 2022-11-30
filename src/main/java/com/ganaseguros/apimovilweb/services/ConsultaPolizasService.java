@@ -1,9 +1,12 @@
 package com.ganaseguros.apimovilweb.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ganaseguros.apimovilweb.dto.PolizasDto;
+import com.ganaseguros.apimovilweb.dao.IDominioDao;
+import com.ganaseguros.apimovilweb.dao.ISolicitudSeguroDao;
+import com.ganaseguros.apimovilweb.dto.PolizaDto;
 import com.ganaseguros.apimovilweb.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.dto.SolicitudPolizaDto;
+import com.ganaseguros.apimovilweb.entity.SolicitudSeguroEntity;
 import com.ganaseguros.apimovilweb.utils.FuncionesFechas;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstTipoMedioSolicitudSeguro;
@@ -19,10 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -40,6 +40,12 @@ public class ConsultaPolizasService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private ISolicitudSeguroDao iSolicitudSeguroDao;
+
+    @Autowired
+    private IDominioDao iDominioDao;
+
 
     public String obtenerToken() throws URISyntaxException {
         ResponseEntity<Map> resultMap = restTemplate.postForEntity(new URI(urlSalesforce + "/services/oauth2/token?grant_type=password&" +
@@ -56,7 +62,7 @@ public class ConsultaPolizasService {
     public ResponseDto consultaPoliza(Map objRequest) {
 
         String vNroDocumento = objRequest.get("nroDocumento") != null ? objRequest.get("nroDocumento").toString() : "";
-        String vExtension = objRequest.get("extension") != null ? objRequest.get("extension").toString() : "";
+        String vCiudadExpedido = objRequest.get("ciudadExpedido") != null ? objRequest.get("ciudadExpedido").toString() : ""; // de momento esto no se utiliza, el Servicio de Abel no usa
         String vFechaNac = objRequest.get("fechaNacimiento") != null ? objRequest.get("fechaNacimiento").toString() : "";
         String vComplemento = objRequest.get("complemento") != null ? objRequest.get("complemento").toString() : "";
 
@@ -65,7 +71,7 @@ public class ConsultaPolizasService {
         Map<String, Object> mapDatosPoliza = null;
         Map<String, Object> mapDatosPolizaDetalle = null;
 
-        List<PolizasDto> lstPolizas = new ArrayList<>();
+        List<PolizaDto> lstPolizas = new ArrayList<>();
         ResponseDto res = new ResponseDto();
 
         try {
@@ -109,7 +115,7 @@ public class ConsultaPolizasService {
                         String urlPolizas = urlSalesforce + "/services/apexrest/vlocity_ins/v1/integrationprocedure/bg_ti_g_getProductInformation";
                         Map<String, Object> requestGetPoliza = new HashMap<>();
                         requestGetPoliza.put("AccountId", vAccountIdMap.get("AccountId").toString());
-                        if(vAccountIdMap.get("CustomerBirthDate")==null || !FuncionesFechas.formatearFecha_ddmmyyyy(vAccountIdMap.get("CustomerBirthDate")+"").equals(vFechaNac) ){
+                        if (vAccountIdMap.get("CustomerBirthDate") == null || !FuncionesFechas.formatearFecha_ddmmyyyy(vAccountIdMap.get("CustomerBirthDate") + "").equals(vFechaNac)) {
                             res.setCodigo(ConstDiccionarioMensaje.CODMW2002);
                             res.setMensaje(ConstDiccionarioMensaje.CODMW2002_MENSAJE);
                             return res;
@@ -123,11 +129,11 @@ public class ConsultaPolizasService {
                             if (mapDatosPoliza.get("codigoMensaje").equals("CODSF1000") && mapDatosPoliza.get("Products") != null) {
 
 
-                                PolizasDto objPoliza = null;
+                                PolizaDto objPoliza = null;
                                 Map<String, Object> objMapProductos = oMapper.convertValue(mapDatosPoliza.get("Products"), Map.class);
                                 List<Map<String, Object>> lstMapPolizas = oMapper.convertValue(objMapProductos.get("objetos"), ArrayList.class);
                                 for (Map<String, Object> objMapPoliza : lstMapPolizas) {
-                                    objPoliza = new PolizasDto();
+                                    objPoliza = new PolizaDto();
                                     objPoliza = this.initObjPOliza(objPoliza);
                                     objPoliza.setPolizaId(objMapPoliza.get("PolicyId") != null ? objMapPoliza.get("PolicyId").toString() : "-");
                                     objPoliza.setNombreProducto(objMapPoliza.get("productName") != null ? objMapPoliza.get("productName").toString() : " - ");
@@ -187,7 +193,7 @@ public class ConsultaPolizasService {
                                             objPoliza.setTieneDocumentoPoliza((objMapPolizaDetalle.get("ArchivoBase64") != null && !objMapPolizaDetalle.get("ArchivoBase64").toString().trim().equals("")) ? true : false);
 
 
-                                        }else{
+                                        } else {
                                             res.setCodigo(ConstDiccionarioMensaje.CODMW2002);
                                             res.setMensaje(ConstDiccionarioMensaje.CODMW2002_MENSAJE);
                                             return res;
@@ -196,7 +202,7 @@ public class ConsultaPolizasService {
                                     lstPolizas.add(objPoliza);
                                 }
 
-                            }else{
+                            } else {
                                 res.setCodigo(ConstDiccionarioMensaje.CODMW2002);
                                 res.setMensaje(ConstDiccionarioMensaje.CODMW2002_MENSAJE);
                                 return res;
@@ -205,7 +211,7 @@ public class ConsultaPolizasService {
                         }
                     }
 
-                }else{
+                } else {
                     res.setCodigo(ConstDiccionarioMensaje.CODMW2002);
                     res.setMensaje(ConstDiccionarioMensaje.CODMW2002_MENSAJE);
                     return res;
@@ -231,23 +237,29 @@ public class ConsultaPolizasService {
     public ResponseDto enviarSolicitudSeguro(SolicitudPolizaDto pSolicitudPolizaDto) {
         ResponseDto res = new ResponseDto();
         try {
-            if(pSolicitudPolizaDto.getTipoMedioSolicitudSeguro()==null || pSolicitudPolizaDto.getTipoMedioSolicitudSeguro()<=0){
+            if (pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId() == null || pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId() <= 0) {
                 res.setCodigo(ConstDiccionarioMensaje.CODMW2006);
                 res.setMensaje(ConstDiccionarioMensaje.CODMW2006_MENSAJE);
                 return res;
             }
-            if(
-                    (pSolicitudPolizaDto.getNombres()==null || pSolicitudPolizaDto.getNombres().trim().equals("")) ||
-                    (pSolicitudPolizaDto.getApellidos()==null || pSolicitudPolizaDto.getApellidos().trim().equals("")) ||
-                    (pSolicitudPolizaDto.getTelefonoCelular()==null || pSolicitudPolizaDto.getTelefonoCelular().trim().equals("")) ||
-                    (pSolicitudPolizaDto.getCiudad()==null || pSolicitudPolizaDto.getCiudad().trim().equals(""))
-            ){
+            if (
+                    (pSolicitudPolizaDto.getNombres() == null || pSolicitudPolizaDto.getNombres().trim().equals("")) ||
+                            (pSolicitudPolizaDto.getApellidos() == null || pSolicitudPolizaDto.getApellidos().trim().equals("")) ||
+                            (pSolicitudPolizaDto.getTelefonoCelular() == null || pSolicitudPolizaDto.getTelefonoCelular().trim().equals("")) ||
+                            (pSolicitudPolizaDto.getCiudad() == null || pSolicitudPolizaDto.getCiudad().trim().equals(""))
+            ) {
 
                 res.setCodigo(ConstDiccionarioMensaje.CODMW2004);
                 res.setMensaje(ConstDiccionarioMensaje.CODMW2004_MENSAJE);
                 return res;
 
             }
+
+            String medio = "";
+            if (pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId().equals(ConstTipoMedioSolicitudSeguro.MOVIL))
+                medio = "Móvil";
+            if (pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId().equals(ConstTipoMedioSolicitudSeguro.WEB))
+                medio = "Web";
 
             // Crear el asunto
             String vAsunto = "SOLICITUD DE SEGURO";
@@ -256,8 +268,10 @@ public class ConsultaPolizasService {
             StringBuilder vBody = new StringBuilder();
 
 
+
+
             vBody.append("<div style='background-color: #6fbf31; color: #fff; width: 100%; height: 50px; font-size: 40px; text-align: center;'>SOLICITUD DE SEGURO</div>");
-            vBody.append("<p>Mediante la presente se informa de una solicitud de Seguro desde la Aplicaci&oacute;n M&oacute;vil con el siguiente detalle:</p>");
+            vBody.append("<p>Mediante la presente se informa de una solicitud de Seguro desde la Aplicaci&oacute;n "+medio+" con el siguiente detalle:</p>");
             vBody.append("<table style='border-collapse: collapse; width: 100%; height: 126px;' border='1'>");
             vBody.append("<tbody>");
             vBody.append("<tr style='height: 18px;'>");
@@ -278,7 +292,7 @@ public class ConsultaPolizasService {
             vBody.append("</tr>");
             vBody.append("<tr style='height: 18px;'>");
             vBody.append("<td style='width: 50%; height: 18px; '><strong>Ciudad</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getCiudad() != null ? pSolicitudPolizaDto.getCiudad() : "" + "</td>");
+            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getCiudad() != null ? pSolicitudPolizaDto.getCiudad() : ""+  "</td>");
             vBody.append("</tr>");
             vBody.append("<tr style='height: 18px;'>");
             vBody.append("<td style='width: 50%; height: 18px; '><strong>Tiene algun seguro contratado con nosotros?</strong></td>");
@@ -298,18 +312,21 @@ public class ConsultaPolizasService {
             vBody.append("</tr>");
 
             vBody.append("<tr style='height: 18px;'>");
+            vBody.append("<td style='width: 50%; height: 18px; '><strong>Descripción de la solicitud</strong></td>");
+            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getDescripcion () != null ?  pSolicitudPolizaDto.getDescripcion ()  : "" + "</td>");
+            vBody.append("</tr>");
+
+            vBody.append("<tr style='height: 18px;'>");
             vBody.append("<td style='width: 50%; height: 18px; '><strong>Tipo de seguro de interés</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getTipoSeguroInteresado() != null ? pSolicitudPolizaDto.getTipoSeguroInteresado() : "" + "</td>");
+            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getTipoProductoId () != null ? iDominioDao.getDominioByDominioId(  pSolicitudPolizaDto.getTipoProductoId()).get().getDescripcion()  : "" + "</td>");
             vBody.append("</tr>");
 
             vBody.append("</tbody>");
             vBody.append("</table>");
             vBody.append("<p></p>");
             vBody.append("<hr />");
-            String medio = "";
-            if(pSolicitudPolizaDto.getTipoMedioSolicitudSeguro().equals(ConstTipoMedioSolicitudSeguro.MOVIL)) medio = "Móvil";
-            if(pSolicitudPolizaDto.getTipoMedioSolicitudSeguro().equals(ConstTipoMedioSolicitudSeguro.WEB)) medio = "Web";
-            vBody.append("<p><strong>GANASEGUROS</strong><br />Correo generado desde la Aplicaci&oacute;n "+medio+".</p>");
+
+            vBody.append("<p><strong>GANASEGUROS</strong><br />Correo generado desde la Aplicaci&oacute;n " + medio + ".</p>");
             vBody.append(" <img src='https://front-funcionales.azurewebsites.net/img/logo_ganaseguros3.c585e0d6.jpg' > ");
 
 
@@ -321,6 +338,25 @@ public class ConsultaPolizasService {
 
             emailService.enviarCorreoHtml(vDestino, vAsunto, vBody.toString());
 
+            try {
+                SolicitudSeguroEntity objInsert = new SolicitudSeguroEntity();
+                objInsert.setNombres(pSolicitudPolizaDto.getNombres());
+                objInsert.setApellidos(pSolicitudPolizaDto.getApellidos());
+                objInsert.setTelefono_celular(pSolicitudPolizaDto.getTelefonoCelular());
+                objInsert.setCiudad(pSolicitudPolizaDto.getCiudad());
+                objInsert.setCorreo(pSolicitudPolizaDto.getCorreo());
+                objInsert.setTieneSeguroNosotros(pSolicitudPolizaDto.getTieneSeguroConNosotros());
+                objInsert.setTieneSeguroOtros(pSolicitudPolizaDto.getTieneSeguroConOtros());
+                objInsert.setCreadoCrm(false);
+                objInsert.setDescripcion(pSolicitudPolizaDto.getDescripcion());
+                objInsert.setTipoMedioSolicitudSeguroId(pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId());
+                objInsert.setFechaRegistro(new Date());
+                objInsert.setEstadoId(1000);
+                iSolicitudSeguroDao.save(objInsert);
+
+            } catch (Exception ex) {
+
+            }
             res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
             res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
             return res;
@@ -361,7 +397,7 @@ public class ConsultaPolizasService {
             );
             if (resultMapDatosPolizaDetalle != null && resultMapDatosPolizaDetalle.getStatusCode().value() == 200) {
                 mapDatosPolizaDetalle = new ObjectMapper().readValue(resultMapDatosPolizaDetalle.getBody(), Map.class);
-                if (mapDatosPolizaDetalle.get("codigoMensaje").equals("CODSF1000") && mapDatosPolizaDetalle.get("Poliza")!=null) {
+                if (mapDatosPolizaDetalle.get("codigoMensaje").equals("CODSF1000") && mapDatosPolizaDetalle.get("Poliza") != null) {
                     List<Map<String, Object>> lstMapPolizaDetalle = oMapper.convertValue(mapDatosPolizaDetalle.get("Poliza"), ArrayList.class);
                     Map<String, Object> objMapPolizaDetalle = oMapper.convertValue(lstMapPolizaDetalle.get(0), Map.class);
                     if (objMapPolizaDetalle.get("ArchivoBase64") != null && !objMapPolizaDetalle.get("ArchivoBase64").toString().trim().equals("")) {
@@ -374,12 +410,12 @@ public class ConsultaPolizasService {
                         res.setMensaje(ConstDiccionarioMensaje.CODMW2005_MENSAJE);
                         return res;
                     }
-                }else{
+                } else {
                     res.setCodigo(ConstDiccionarioMensaje.CODMW2005);
                     res.setMensaje(ConstDiccionarioMensaje.CODMW2005_MENSAJE);
                     return res;
                 }
-            }else{
+            } else {
                 res.setCodigo(ConstDiccionarioMensaje.CODMW2005);
                 res.setMensaje(ConstDiccionarioMensaje.CODMW2005_MENSAJE);
                 return res;
@@ -391,7 +427,7 @@ public class ConsultaPolizasService {
         }
     }
 
-    private PolizasDto initObjPOliza(PolizasDto pPolizasDto) {
+    private PolizaDto initObjPOliza(PolizaDto pPolizasDto) {
         pPolizasDto.setPolizaId(" - ");
         pPolizasDto.setNombreProducto(" - ");
         pPolizasDto.setNumeroProducto(" - ");

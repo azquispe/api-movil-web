@@ -1,6 +1,5 @@
 package com.ganaseguros.apimovilweb.controllers;
 
-import com.ganaseguros.apimovilweb.dto.PolizasDto;
 import com.ganaseguros.apimovilweb.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.dto.SolicitudPolizaDto;
 import com.ganaseguros.apimovilweb.services.ConsultaPolizasService;
@@ -9,10 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -33,7 +33,6 @@ public class ConsultaPolizasController {
         response.put("mensaje", res.getMensaje());
         if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
             response.put("datosPoliza", res.getElementoGenerico());
-
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
