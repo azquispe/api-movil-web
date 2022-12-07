@@ -5,6 +5,7 @@ import com.ganaseguros.apimovilweb.dao.ISolicitudSeguroDao;
 import com.ganaseguros.apimovilweb.dto.AvisoMovilDto;
 import com.ganaseguros.apimovilweb.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.entity.AvisoMovilEntity;
+import com.ganaseguros.apimovilweb.utils.FuncionesFechas;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstEstado;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class AvisoMovilService {
                 objDto.setAvisosMovilId(obj.getAvisosMovilId());
                 objDto.setTitulo(obj.getTitulo());
                 objDto.setContenido(obj.getContenido());
-                objDto.setFechaAviso(obj.getFechaAviso());
+                objDto.setFechaAviso(obj.getFechaAviso()!=null?FuncionesFechas.ConvertirDateToString(obj.getFechaAviso()):"" );
                 objDto.setRuta(obj.getRuta());
                 objDto.setEnlace(obj.getEnlace());
                 lstDto.add(objDto);

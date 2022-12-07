@@ -344,6 +344,7 @@ public class ConsultaPolizasService {
                 objInsert.setApellidos(pSolicitudPolizaDto.getApellidos());
                 objInsert.setTelefono_celular(pSolicitudPolizaDto.getTelefonoCelular());
                 objInsert.setCiudad(pSolicitudPolizaDto.getCiudad());
+                objInsert.setTipoProductoId(pSolicitudPolizaDto.getTipoProductoId());
                 objInsert.setCorreo(pSolicitudPolizaDto.getCorreo());
                 objInsert.setTieneSeguroNosotros(pSolicitudPolizaDto.getTieneSeguroConNosotros());
                 objInsert.setTieneSeguroOtros(pSolicitudPolizaDto.getTieneSeguroConOtros());

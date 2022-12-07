@@ -1,5 +1,8 @@
 package com.ganaseguros.apimovilweb.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class FuncionesFechas {
     public static String formatearFecha_ddmmyyyy(String fecha) {
         try {
@@ -12,5 +15,8 @@ public class FuncionesFechas {
         } catch (Exception ex) {
             return "";
         }
+    }
+    public static String ConvertirDateToString(Date fecha) {
+        return new SimpleDateFormat("dd/MM/yyyy").format(fecha);
     }
 }

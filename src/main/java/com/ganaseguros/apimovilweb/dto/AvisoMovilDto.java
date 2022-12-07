@@ -14,8 +14,6 @@ public class AvisoMovilDto {
     private String contenido;
     private String enlace;
     private String ruta;
-    private Date fechaAviso;
-    private Date fechaRegistro;
-    private Date fechaModificacion;
+    private String fechaAviso;
 
 }

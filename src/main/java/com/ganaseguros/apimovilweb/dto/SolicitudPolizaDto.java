@@ -10,9 +10,9 @@ public class SolicitudPolizaDto {
     private String telefonoCelular;
     private String correo;
     private String ciudad;
+    private Integer tipoProductoId;
     private Boolean tieneSeguroConNosotros;
     private Boolean tieneSeguroConOtros;
-    private Integer tipoProductoId;
     private String descripcion;
     private Integer tipoMedioSolicitudSeguroId;
 }

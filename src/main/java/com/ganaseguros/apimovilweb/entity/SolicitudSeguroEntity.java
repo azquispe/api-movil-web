@@ -27,6 +27,13 @@ public class SolicitudSeguroEntity {
     private String correo;
     @Column(name = "ciudad")
     private String ciudad;
+
+    @Column(name = "tipo_producto_id")
+    private Integer tipoProductoId;
+
+
+
+
     @Column(name = "tiene_seguro_nosotros")
     private boolean tieneSeguroNosotros;
     @Column(name = "tiene_seguro_otros")
