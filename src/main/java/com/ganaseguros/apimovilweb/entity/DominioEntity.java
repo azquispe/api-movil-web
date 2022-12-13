@@ -11,7 +11,7 @@ import java.util.Date;
 public class DominioEntity {
     @Id
     @Column(name = "dominio_id")
-    private Integer dominioId;
+    private Long dominioId;
     @Column(name = "dominio")
     private String dominio;
     @Column(name = "descripcion")
@@ -22,5 +22,5 @@ public class DominioEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRegistro;
     @Column(name = "estado_id")
-    private Integer estadoId;
+    private Long estadoId;
 }

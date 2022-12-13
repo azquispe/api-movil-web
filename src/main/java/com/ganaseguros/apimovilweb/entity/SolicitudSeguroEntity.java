@@ -10,40 +10,35 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "solicitud_seguro")
+@Table(name = "solicitud_seguros")
 public class SolicitudSeguroEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "solicitud_seguro_id")
-    private Integer solicitudSeguroId;
+    private Long solicitudSeguroId;
     @Column(name = "nombres")
     private String nombres;
     @Column(name = "apellidos")
     private String apellidos;
     @Column(name = "telefono_celular")
-    private String telefono_celular;
+    private String telefonoCelular;
     @Column(name = "correo")
     private String correo;
     @Column(name = "ciudad")
     private String ciudad;
-
     @Column(name = "tipo_producto_id")
-    private Integer tipoProductoId;
-
-
-
-
+    private Long tipoProductoId;
     @Column(name = "tiene_seguro_nosotros")
     private boolean tieneSeguroNosotros;
     @Column(name = "tiene_seguro_otros")
     private boolean tieneSeguroOtros;
-    @Column(name = "creado_crm")
-    private boolean creadoCrm;
     @Column(name = "descripcion")
     private String descripcion;
-    @Column(name = "tipo_medio_solicitud_seguro_id")
-    private Integer tipoMedioSolicitudSeguroId;
+    @Column(name = "creado_crm")
+    private boolean creadoCrm;
+    @Column(name = "aplicacion_id")
+    private Long aplicacionId;
     @Column(name = "fecha_registro")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRegistro;
@@ -51,6 +46,9 @@ public class SolicitudSeguroEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
     @Column(name = "estado_id")
-    private Integer estadoId;
+    private Long estadoId;
+
+
+
 
 }

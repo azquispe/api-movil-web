@@ -7,20 +7,20 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "avisos_movil")
-public class AvisoMovilEntity {
+@Table(name = "avisos")
+public class AvisoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "avisos_movil_id")
-    private Integer avisosMovilId;
+    @Column(name = "aviso_id")
+    private Long avisoId;
     @Column(name = "titulo")
     private String titulo;
     @Column(name = "contenido")
     private String contenido;
     @Column(name = "enlace")
     private String enlace;
-    @Column(name = "ruta")
-    private String ruta;
+    @Column(name = "aplicacion_id")
+    private Long aplicacionId;
     @Column(name = "fecha_aviso")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAviso;
@@ -31,5 +31,5 @@ public class AvisoMovilEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
     @Column(name = "estado_id")
-    private Integer estadoId;
+    private Long estadoId;
 }

@@ -1,18 +1,14 @@
 package com.ganaseguros.apimovilweb.controllers;
 
-import com.ganaseguros.apimovilweb.dto.ResponseDto;
-import com.ganaseguros.apimovilweb.services.DominioService;
-import com.ganaseguros.apimovilweb.services.EmailService;
+import com.ganaseguros.apimovilweb.domain.dto.ResponseDto;
+import com.ganaseguros.apimovilweb.domain.services.DominioService;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -27,7 +23,7 @@ public class DominioController {
     public ResponseEntity<?> findByDominio(@PathVariable("pDominio") String pDominio) {
 
         Map<String, Object> response = new HashMap<>();
-        ResponseDto res = dominioService.findByDominio(pDominio);
+        ResponseDto res = dominioService.obtenerDominioPorDominio(pDominio);
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
         if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))

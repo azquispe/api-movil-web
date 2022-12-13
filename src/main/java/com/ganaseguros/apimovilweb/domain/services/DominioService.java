@@ -1,8 +1,8 @@
-package com.ganaseguros.apimovilweb.services;
+package com.ganaseguros.apimovilweb.domain.services;
 
-import com.ganaseguros.apimovilweb.dao.IDominioDao;
-import com.ganaseguros.apimovilweb.dto.DominioDto;
-import com.ganaseguros.apimovilweb.dto.ResponseDto;
+import com.ganaseguros.apimovilweb.domain.dao.IDominioDao;
+import com.ganaseguros.apimovilweb.domain.dto.DominioDto;
+import com.ganaseguros.apimovilweb.domain.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.entity.DominioEntity;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class DominioService {
     private IDominioDao iDominioDao;
 
 
-    public ResponseDto findByDominio(String pDominio) {
+    public ResponseDto obtenerDominioPorDominio(String pDominio) {
         ResponseDto res = new ResponseDto();
         try{
             DominioDto dominioDto = null;

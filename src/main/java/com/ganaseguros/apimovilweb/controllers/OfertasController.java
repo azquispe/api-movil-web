@@ -1,9 +1,10 @@
 package com.ganaseguros.apimovilweb.controllers;
 
-import com.ganaseguros.apimovilweb.dto.AvisoMovilDto;
-import com.ganaseguros.apimovilweb.dto.ResponseDto;
-import com.ganaseguros.apimovilweb.services.AvisoMovilService;
-import com.ganaseguros.apimovilweb.services.DominioService;
+
+
+import com.ganaseguros.apimovilweb.domain.dto.OfertaSliderDto;
+import com.ganaseguros.apimovilweb.domain.dto.ResponseDto;
+import com.ganaseguros.apimovilweb.domain.services.OfertaSliderService;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,26 +17,27 @@ import java.util.Map;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/app-web")
-public class AvisoMovilController {
+public class OfertasController {
+
 
     @Autowired
-    private AvisoMovilService avisoMovilService;
+    private OfertaSliderService ofertaService;
 
-    @GetMapping("/v1/obtener-avisos")
-    public ResponseEntity<?> obtenerAvisos() {
+    @GetMapping("/v1/obtener-ofertas/{pAplicacionID}")
+    public ResponseEntity<?> obtenerOfertas(@PathVariable Long pAplicacionID) {
         Map<String, Object> response = new HashMap<>();
-        ResponseDto res = avisoMovilService.findAll();
+        ResponseDto res = ofertaService.obtenerAvisosPorAplicacionID(pAplicacionID);
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
         if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
-            response.put("avisos", res.getElementoGenerico());
+            response.put("ofertas", res.getElementoGenerico());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/v1/registrar-aviso")
-    public ResponseEntity<?> registrarAvisos(@RequestBody AvisoMovilDto avisoMovilDto) {
+    @PostMapping("/v1/registrar-ofertas")
+    public ResponseEntity<?> registrarAvisos(@RequestBody OfertaSliderDto pOfertaSliderDto) {
         Map<String, Object> response = new HashMap<>();
-        ResponseDto res = avisoMovilService.insertAvisoMovil(avisoMovilDto);
+        ResponseDto res = ofertaService.insertOfertaSlider(pOfertaSliderDto);
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
         if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))

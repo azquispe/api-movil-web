@@ -1,4 +1,4 @@
-package com.ganaseguros.apimovilweb.dto;
+package com.ganaseguros.apimovilweb.domain.dto;
 
 import lombok.Data;
 

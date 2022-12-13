@@ -1,15 +1,12 @@
-package com.ganaseguros.apimovilweb.services;
+package com.ganaseguros.apimovilweb.domain.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ganaseguros.apimovilweb.dao.IDominioDao;
-import com.ganaseguros.apimovilweb.dao.ISolicitudSeguroDao;
-import com.ganaseguros.apimovilweb.dto.PolizaDto;
-import com.ganaseguros.apimovilweb.dto.ResponseDto;
-import com.ganaseguros.apimovilweb.dto.SolicitudPolizaDto;
-import com.ganaseguros.apimovilweb.entity.SolicitudSeguroEntity;
+import com.ganaseguros.apimovilweb.domain.dao.IDominioDao;
+import com.ganaseguros.apimovilweb.domain.dao.ISolicitudSeguroDao;
+import com.ganaseguros.apimovilweb.domain.dto.PolizaDto;
+import com.ganaseguros.apimovilweb.domain.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.utils.FuncionesFechas;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
-import com.ganaseguros.apimovilweb.utils.constantes.ConstTipoMedioSolicitudSeguro;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,10 +27,22 @@ import java.util.*;
 public class ConsultaPolizasService {
 
     private final RestTemplate restTemplate;
-    //final String baseUrl = "https://sociedadganadero--devtemp8.sandbox.my.salesforce.com";
 
     @Value("${url.salesforce}")
     private String urlSalesforce;
+    @Value("${url.salesforce.grant_type}")
+    private String urlSalesforceGrantType;
+    @Value("${url.salesforce.cliente_id}")
+    private String urlSalesforceClienteId;
+    @Value("${url.salesforce.client_secret}")
+    private String urlSalesforceClientSecret;
+    @Value("${url.salesforce.username}")
+    private String urlSalesforceUsername;
+    @Value("${url.salesforce.password}")
+    private String urlSalesforcePassword;
+
+
+
 
     ObjectMapper oMapper = new ObjectMapper();
 
@@ -48,10 +57,10 @@ public class ConsultaPolizasService {
 
 
     public String obtenerToken() throws URISyntaxException {
-        ResponseEntity<Map> resultMap = restTemplate.postForEntity(new URI(urlSalesforce + "/services/oauth2/token?grant_type=password&" +
-                "client_id=3MVG99VEEJ_Bj3.7I7xGG.Bq_J8F3a4MeRx2mQ_YyzMsOkrBBLD_brf0BO42IQUn2rtDSdv5ryAoCQLuDZcwP&" +
-                "client_secret=77ADEFF8025EEBE56BC9DBA7AC5A45685293C40B2A553F1A4B35DCC0CE454E68" +
-                "&username=ararancibia@bg.com.bo.devtemp8&password=fa3BO2aa77cPSdT836OF12yYKHE2fj7Y"), new HashMap<>(), Map.class);
+        ResponseEntity<Map> resultMap = restTemplate.postForEntity(new URI(urlSalesforce + "/services/oauth2/token?grant_type="+urlSalesforceGrantType+"&" +
+                "client_id="+urlSalesforceClienteId+"&" +
+                "client_secret=" +urlSalesforceClientSecret+
+                "&username="+urlSalesforceUsername+"&password="+urlSalesforcePassword), new HashMap<>(), Map.class);
         if (resultMap != null && resultMap.getStatusCode().value() == 200) {
             return resultMap.getBody().get("access_token").toString();
         } else {
@@ -234,141 +243,6 @@ public class ConsultaPolizasService {
     }
 
 
-    public ResponseDto enviarSolicitudSeguro(SolicitudPolizaDto pSolicitudPolizaDto) {
-        ResponseDto res = new ResponseDto();
-        try {
-            if (pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId() == null || pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId() <= 0) {
-                res.setCodigo(ConstDiccionarioMensaje.CODMW2006);
-                res.setMensaje(ConstDiccionarioMensaje.CODMW2006_MENSAJE);
-                return res;
-            }
-            if (
-                    (pSolicitudPolizaDto.getNombres() == null || pSolicitudPolizaDto.getNombres().trim().equals("")) ||
-                            (pSolicitudPolizaDto.getApellidos() == null || pSolicitudPolizaDto.getApellidos().trim().equals("")) ||
-                            (pSolicitudPolizaDto.getTelefonoCelular() == null || pSolicitudPolizaDto.getTelefonoCelular().trim().equals("")) ||
-                            (pSolicitudPolizaDto.getCiudad() == null || pSolicitudPolizaDto.getCiudad().trim().equals(""))
-            ) {
-
-                res.setCodigo(ConstDiccionarioMensaje.CODMW2004);
-                res.setMensaje(ConstDiccionarioMensaje.CODMW2004_MENSAJE);
-                return res;
-
-            }
-
-            String medio = "";
-            if (pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId().equals(ConstTipoMedioSolicitudSeguro.MOVIL))
-                medio = "Móvil";
-            if (pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId().equals(ConstTipoMedioSolicitudSeguro.WEB))
-                medio = "Web";
-
-            // Crear el asunto
-            String vAsunto = "SOLICITUD DE SEGURO";
-
-            // Crear el cuerpo del correo
-            StringBuilder vBody = new StringBuilder();
-
-
-
-
-            vBody.append("<div style='background-color: #6fbf31; color: #fff; width: 100%; height: 50px; font-size: 40px; text-align: center;'>SOLICITUD DE SEGURO</div>");
-            vBody.append("<p>Mediante la presente se informa de una solicitud de Seguro desde la Aplicaci&oacute;n "+medio+" con el siguiente detalle:</p>");
-            vBody.append("<table style='border-collapse: collapse; width: 100%; height: 126px;' border='1'>");
-            vBody.append("<tbody>");
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Nombre(s)</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getNombres() != null ? pSolicitudPolizaDto.getNombres() : " - " + "</td>");
-            vBody.append("</tr>");
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Apellido(s)</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getApellidos() != null ? pSolicitudPolizaDto.getApellidos() : " - " + "</td>");
-            vBody.append("</tr>");
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Teléfono o Celular</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getTelefonoCelular() != null ? pSolicitudPolizaDto.getTelefonoCelular() : "" + "</td>");
-            vBody.append("</tr>");
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Correo</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getCorreo() != null ? pSolicitudPolizaDto.getCorreo() : "" + "</td>");
-            vBody.append("</tr>");
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Ciudad</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getCiudad() != null ? pSolicitudPolizaDto.getCiudad() : ""+  "</td>");
-            vBody.append("</tr>");
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Tiene algun seguro contratado con nosotros?</strong></td>");
-            if (pSolicitudPolizaDto.getTieneSeguroConNosotros()) {
-                vBody.append("<td style='width: 50%; height: 18px;'>SI</td>");
-            } else {
-                vBody.append("<td style='width: 50%; height: 18px;'>NO</td>");
-            }
-            vBody.append("</tr>");
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Tiene algun seguro contratado con otra compañia?</strong></td>");
-            if (pSolicitudPolizaDto.getTieneSeguroConOtros()) {
-                vBody.append("<td style='width: 50%; height: 18px;'>SI</td>");
-            } else {
-                vBody.append("<td style='width: 50%; height: 18px;'>NO</td>");
-            }
-            vBody.append("</tr>");
-
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Descripción de la solicitud</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getDescripcion () != null ?  pSolicitudPolizaDto.getDescripcion ()  : "" + "</td>");
-            vBody.append("</tr>");
-
-            vBody.append("<tr style='height: 18px;'>");
-            vBody.append("<td style='width: 50%; height: 18px; '><strong>Tipo de seguro de interés</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudPolizaDto.getTipoProductoId () != null ? iDominioDao.getDominioByDominioId(  pSolicitudPolizaDto.getTipoProductoId()).get().getDescripcion()  : "" + "</td>");
-            vBody.append("</tr>");
-
-            vBody.append("</tbody>");
-            vBody.append("</table>");
-            vBody.append("<p></p>");
-            vBody.append("<hr />");
-
-            vBody.append("<p><strong>GANASEGUROS</strong><br />Correo generado desde la Aplicaci&oacute;n " + medio + ".</p>");
-            vBody.append(" <img src='https://front-funcionales.azurewebsites.net/img/logo_ganaseguros3.c585e0d6.jpg' > ");
-
-
-            // Determinar el destinatario copia
-            //String vDestino = "azquispe@bg.com.bo";
-            String vDestino = "alvaroquispesegales@gmail.com";
-            //String vDestino = "alvaro20092004@hotmail.com";
-
-
-            emailService.enviarCorreoHtml(vDestino, vAsunto, vBody.toString());
-
-            try {
-                SolicitudSeguroEntity objInsert = new SolicitudSeguroEntity();
-                objInsert.setNombres(pSolicitudPolizaDto.getNombres());
-                objInsert.setApellidos(pSolicitudPolizaDto.getApellidos());
-                objInsert.setTelefono_celular(pSolicitudPolizaDto.getTelefonoCelular());
-                objInsert.setCiudad(pSolicitudPolizaDto.getCiudad());
-                objInsert.setTipoProductoId(pSolicitudPolizaDto.getTipoProductoId());
-                objInsert.setCorreo(pSolicitudPolizaDto.getCorreo());
-                objInsert.setTieneSeguroNosotros(pSolicitudPolizaDto.getTieneSeguroConNosotros());
-                objInsert.setTieneSeguroOtros(pSolicitudPolizaDto.getTieneSeguroConOtros());
-                objInsert.setCreadoCrm(false);
-                objInsert.setDescripcion(pSolicitudPolizaDto.getDescripcion());
-                objInsert.setTipoMedioSolicitudSeguroId(pSolicitudPolizaDto.getTipoMedioSolicitudSeguroId());
-                objInsert.setFechaRegistro(new Date());
-                objInsert.setEstadoId(1000);
-                iSolicitudSeguroDao.save(objInsert);
-
-            } catch (Exception ex) {
-
-            }
-            res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
-            res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
-            return res;
-
-
-        } catch (Exception ex) {
-            res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
-            res.setMensaje(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
-            return res;
-        }
-    }
 
     public ResponseDto descargarPoliza(String pPolicyId) {
         ResponseDto res = new ResponseDto();

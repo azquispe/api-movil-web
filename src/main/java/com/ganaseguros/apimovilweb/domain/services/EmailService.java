@@ -1,4 +1,4 @@
-package com.ganaseguros.apimovilweb.services;
+package com.ganaseguros.apimovilweb.domain.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,9 @@ public class EmailService {
 
     @Autowired
     JavaMailSender javaMailSender;
-
     @Value("${spring.mail.username}")
     private String email;
+
 
     public void sendEmail(String emailTo){
         MimeMessage message = javaMailSender.createMimeMessage();

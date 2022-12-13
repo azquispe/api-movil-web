@@ -1,4 +1,4 @@
-package com.ganaseguros.apimovilweb.dao;
+package com.ganaseguros.apimovilweb.domain.dao;
 
 import com.ganaseguros.apimovilweb.entity.DominioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +14,5 @@ public interface IDominioDao extends JpaRepository<DominioEntity, Long> {
     public List<DominioEntity> findByDominio(@Param("pDominio") String pDominio);
 
     @Query("select d from DominioEntity d where d.dominioId = :pDominioId and d.estadoId = 1000 ")
-    public Optional<DominioEntity> getDominioByDominioId(@Param("pDominioId") Integer pDominioId);
+    public Optional<DominioEntity> getDominioByDominioId(@Param("pDominioId") Long pDominioId);
 }

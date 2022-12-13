@@ -23,7 +23,7 @@ public class ConstDiccionarioMensaje {
     public static final String CODMW2004 = "CODMW2004";
     public static final String CODMW2004_MENSAJE = "Nombre(s), Apellido(s), Telefono/Celular y Ciudad es requerido";
     public static final String CODMW2006 = "CODMW2006";
-    public static final String CODMW2006_MENSAJE = "Medio es requerido";
+    public static final String CODMW2006_MENSAJE = "Tipo de Aplicación es requerido";
     // ==============================
 
     // DESCARGA DE POLIZA
