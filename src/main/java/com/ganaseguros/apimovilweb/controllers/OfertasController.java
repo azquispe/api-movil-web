@@ -26,7 +26,18 @@ public class OfertasController {
     @GetMapping("/v1/obtener-ofertas/{pAplicacionID}")
     public ResponseEntity<?> obtenerOfertas(@PathVariable Long pAplicacionID) {
         Map<String, Object> response = new HashMap<>();
-        ResponseDto res = ofertaService.obtenerAvisosPorAplicacionID(pAplicacionID);
+        ResponseDto res = ofertaService.obtenerOfertasPorAplicacionID(pAplicacionID);
+        response.put("codigoMensaje", res.getCodigo());
+        response.put("mensaje", res.getMensaje());
+        if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
+            response.put("ofertas", res.getElementoGenerico());
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/v1/obtener-ofertas-todos")
+    public ResponseEntity<?> obtenerOfertasTodos() {
+        Map<String, Object> response = new HashMap<>();
+        ResponseDto res = ofertaService.obtenerOfertasTodos();
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
         if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
@@ -35,13 +46,21 @@ public class OfertasController {
     }
 
     @PostMapping("/v1/registrar-ofertas")
-    public ResponseEntity<?> registrarAvisos(@RequestBody OfertaSliderDto pOfertaSliderDto) {
+    public ResponseEntity<?> registrarOfertas(@RequestBody OfertaSliderDto pOfertaSliderDto) {
         Map<String, Object> response = new HashMap<>();
         ResponseDto res = ofertaService.insertOfertaSlider(pOfertaSliderDto);
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
         if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
             response.put("avisos", res.getElementoGenerico());
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+    }
+    @DeleteMapping("/v1/eliminar-ofertas/{pOfertaSliderID}")
+    public ResponseEntity<?> eliminarOfertas(@PathVariable Long pOfertaSliderID) {
+        Map<String, Object> response = new HashMap<>();
+        ResponseDto res = ofertaService.eliminarOfertasPorID(pOfertaSliderID);
+        response.put("codigoMensaje", res.getCodigo());
+        response.put("mensaje", res.getMensaje());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 }

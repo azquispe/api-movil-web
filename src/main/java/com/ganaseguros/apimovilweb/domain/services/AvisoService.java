@@ -4,7 +4,9 @@ import com.ganaseguros.apimovilweb.domain.dao.IAvisoDao;
 import com.ganaseguros.apimovilweb.domain.dto.AvisoDto;
 import com.ganaseguros.apimovilweb.domain.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.entity.AvisoEntity;
+import com.ganaseguros.apimovilweb.entity.OfertaSliderEntity;
 import com.ganaseguros.apimovilweb.utils.FuncionesFechas;
+import com.ganaseguros.apimovilweb.utils.FuncionesGenerales;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstEstado;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,31 @@ public class AvisoService {
     private String baseUrl;
 
 
+    public ResponseDto obtenerAvisosTodos (){
+        ResponseDto res = new ResponseDto();
+        try{
+            List<AvisoEntity> lstAvisoEntity = iAvisoDao.obtenerAvisosTodos();
+            List<AvisoDto> lstDto = new ArrayList<>();
+            AvisoDto objDto = null;
+            for (AvisoEntity obj :lstAvisoEntity) {
+                objDto = new AvisoDto();
+                objDto.setAvisoId(obj.getAvisoId());
+                objDto.setTitulo(obj.getTitulo());
+                objDto.setContenido(obj.getContenido());
+                objDto.setFechaAviso(obj.getFechaAviso()!=null?FuncionesFechas.ConvertirDateToString(obj.getFechaAviso()):"" );
+                objDto.setEnlace(obj.getEnlace());
+                objDto.setAplicacionId(obj.getAplicacionId()); // 1002 web    1003 movil
+                lstDto.add(objDto);
+            }
+            res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
+            res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
+            res.setElementoGenerico(lstDto);
+        }catch (Exception ex){
+            res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
+            res.setMensaje(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
+        }
+        return res;
+    }
     public ResponseDto obtenerAvisosPorAplicacionID (Long pAplicacionID){
         ResponseDto res = new ResponseDto();
         try{
@@ -65,8 +92,8 @@ public class AvisoService {
             insert.setFechaRegistro(new Date());
             insert.setEstadoId(ConstEstado.ACTIVO);
             iAvisoDao.save(insert);
-
-            this.enviaPushAviso("AVISO","Nuevo Aviso Registrado");
+            if(pAvisoDto.getAplicacionId().longValue()==1003l)
+                FuncionesGenerales.enviaPushAviso("AVISO","Nuevo Aviso Registrado",baseUrl);
 
             res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
             res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
@@ -80,43 +107,25 @@ public class AvisoService {
         }
         return res;
     }
-    public ResponseDto enviaPushAviso (String title, String text){
+
+    public ResponseDto eliminarAvisoPorID (Long pAvisoId){
         ResponseDto res = new ResponseDto();
         try{
-            RestTemplate restTemplate = new RestTemplate();
-            Map<String, Object> notification = new HashMap<>();
-            notification.put("title", title);
-            notification.put("body", text);
-
-            Map<String, Object> data = new HashMap<>();
-            data.put("badge", "1");
-            data.put("click_action", "FLUTTER_NOTIFICATION_CLICK");
-            data.put("id", "notificacion_aviso");
-            data.put("status", "done");
-
-            Map<String, Object> body = new HashMap<>();
-            body.put("to", "/topics/anuncios_ganaseguros_2022_dev");
-            body.put("notification", notification);
-            body.put("priority", "high");
-            body.put("data", data);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "application/json");
-            headers.set("Authorization", "Key=AAAASRULFRc:APA91bER6GLzPHEIvMBcgkwVitC1d66ByehZbWgWLG6dRkIF8zLuAHz81ZsLfvRhnJF4oakl7PjJAqY8Eca-ngTavcbKt4prXSGfGyVfemPh9M9LGQDUS8Xx7sCXF3N6uRHb9FTZXj7R ");
-
-            HttpEntity<Map> request = new HttpEntity<>(body, headers);
-            ResponseEntity<Map> resultMap = restTemplate.postForEntity(baseUrl+"/fcm/send", request, Map.class);
-
-            res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
-            res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
-
+            Optional<AvisoEntity> objAvisoEntity = iAvisoDao.obtenerAvisoPorID(pAvisoId);
+            if(objAvisoEntity.isPresent()){
+                AvisoEntity update = objAvisoEntity.get();
+                update.setEstadoId(ConstEstado.ANULADO);
+                iAvisoDao.save(update);
+                res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
+                res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
+            }else{
+                res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
+                res.setMensaje(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
+            }
         }catch (Exception ex){
-
-            res.setMensaje(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
             res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
-
-
+            res.setMensaje(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
         }
-        return  res;
+        return res;
     }
 }
