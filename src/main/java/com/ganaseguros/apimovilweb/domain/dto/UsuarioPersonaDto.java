@@ -9,16 +9,6 @@ import java.util.Date;
 
 @Data
 public class UsuarioPersonaDto {
-    private Long usuarioId;
-    private Long generoId;
-    private String nombres;
-    private String apellidoPaterno;
-    private String apellidoMaterno;
-    private String apellidoEsposo;
-    private String numeroDocumento;
-    private String complemento;
-    private Long ciudadExpedidoId;
-    private String numeroCelular;
-    private String correoElectronico;
-    private String fechaNacimiento;
+    private UsuarioDto usuarioDto;
+    private PersonaDto personaDto;
 }

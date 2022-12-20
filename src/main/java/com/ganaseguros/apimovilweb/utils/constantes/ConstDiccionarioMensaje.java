@@ -31,6 +31,13 @@ public class ConstDiccionarioMensaje {
     public static final String CODMW2005_MENSAJE = "No existe  Póliza";
     // ============================
 
+    // LGIN APPP MOVIL
+    public static final String CODMW2007 = "CODMW2007";
+    public static final String CODMW2007_MENSAJE = "Usuario o Contraseña Incorrecta";
+    public static final String CODMW2008 = "CODMW2008";
+    public static final String CODMW2008_MENSAJE = "Usuario y Contraseña es requerido";
+    // ================
+
     // ULTIMO ..CODMW2006
 
 

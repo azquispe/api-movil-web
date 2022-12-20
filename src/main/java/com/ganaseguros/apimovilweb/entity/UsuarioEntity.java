@@ -23,8 +23,6 @@ public class UsuarioEntity {
     private String login;
     @Column(name = "password")
     private String password;
-    @Column(name = "llave")
-    private String llave;
     @Column(name = "fecha_inicio")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaInicio;

@@ -4,7 +4,7 @@ import com.ganaseguros.apimovilweb.domain.dao.IOfertaSliderDao;
 import com.ganaseguros.apimovilweb.domain.dto.OfertaSliderDto;
 import com.ganaseguros.apimovilweb.domain.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.entity.OfertaSliderEntity;
-import com.ganaseguros.apimovilweb.utils.FuncionesGenerales;
+import com.ganaseguros.apimovilweb.utils.FuncionesGenericos;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstEstado;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class OfertaSliderService {
             iOfertaSliderDao.save(insert);
 
             if(pOfertaSliderDto.getAplicacionId().longValue()==1003l)
-                FuncionesGenerales.enviaPushAviso("OFERTA","Nuevo Oferta Registrado",baseUrl);
+                FuncionesGenericos.enviaPushAviso("OFERTA","Nuevo Oferta Registrado",baseUrl);
 
             res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
             res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);

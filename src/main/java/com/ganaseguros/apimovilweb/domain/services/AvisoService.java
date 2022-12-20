@@ -4,18 +4,13 @@ import com.ganaseguros.apimovilweb.domain.dao.IAvisoDao;
 import com.ganaseguros.apimovilweb.domain.dto.AvisoDto;
 import com.ganaseguros.apimovilweb.domain.dto.ResponseDto;
 import com.ganaseguros.apimovilweb.entity.AvisoEntity;
-import com.ganaseguros.apimovilweb.entity.OfertaSliderEntity;
 import com.ganaseguros.apimovilweb.utils.FuncionesFechas;
-import com.ganaseguros.apimovilweb.utils.FuncionesGenerales;
+import com.ganaseguros.apimovilweb.utils.FuncionesGenericos;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstDiccionarioMensaje;
 import com.ganaseguros.apimovilweb.utils.constantes.ConstEstado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -93,7 +88,7 @@ public class AvisoService {
             insert.setEstadoId(ConstEstado.ACTIVO);
             iAvisoDao.save(insert);
             if(pAvisoDto.getAplicacionId().longValue()==1003l)
-                FuncionesGenerales.enviaPushAviso("AVISO","Nuevo Aviso Registrado",baseUrl);
+                FuncionesGenericos.enviaPushAviso("AVISO","Nuevo Aviso Registrado",baseUrl);
 
             res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
             res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);

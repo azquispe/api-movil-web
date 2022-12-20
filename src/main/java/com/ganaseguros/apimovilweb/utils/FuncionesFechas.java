@@ -21,7 +21,7 @@ public class FuncionesFechas {
         return new SimpleDateFormat("dd/MM/yyyy").format(fecha);
     }
     public static Date ConvertirStringToDate(String fecha) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return sdf.parse(fecha);
     }
 }
