@@ -25,8 +25,8 @@ public class SolicitudSeguroEntity {
     private String telefonoCelular;
     @Column(name = "correo")
     private String correo;
-    @Column(name = "ciudad")
-    private String ciudad;
+    @Column(name = "ciudad_id")
+    private Long ciudadId;
     @Column(name = "tipo_producto_id")
     private Long tipoProductoId;
     @Column(name = "tiene_seguro_nosotros")

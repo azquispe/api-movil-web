@@ -12,7 +12,7 @@ public class SolicitudSeguroDto {
     private String apellidos;
     private String telefonoCelular;
     private String correo;
-    private String ciudad;
+    private Long ciudadId;
     private Long tipoProductoId;
     private boolean tieneSeguroNosotros;
     private boolean tieneSeguroOtros;

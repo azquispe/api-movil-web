@@ -11,6 +11,9 @@ public interface IUsuarioDao  extends JpaRepository<UsuarioEntity,Long> {
     @Query("select a from UsuarioEntity a where a.estadoId = 1000 and a.usuarioId = :pUsuarioId ")
     public Optional<UsuarioEntity> obtenerUsuarioPorID(Long pUsuarioId);
 
+    @Query("select a from UsuarioEntity a where a.estadoId = 1000 and a.personaId = :pPersonaId ")
+    public Optional<UsuarioEntity> obtenerUsuarioPorPersonaId(Long pPersonaId);
+
     @Query("select a from UsuarioEntity a where a.estadoId = 1000 and a.login = :pLogin ")
     public Optional<UsuarioEntity> obtenerUsuarioPorLogin(String pLogin);
 

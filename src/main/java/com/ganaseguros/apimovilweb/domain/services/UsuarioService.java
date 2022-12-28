@@ -25,11 +25,19 @@ public class UsuarioService {
     @Autowired
     private IUsuarioDao iUsuarioDao;
 
-    public ResponseDto insertarUsuarioYpersona(UsuarioPersonaDto pUsuarioPersonaDto ) {
+    public ResponseDto insertarUsuarioPersona(UsuarioPersonaDto pUsuarioPersonaDto ) {
         ResponseDto res = new ResponseDto();
         PersonaDto personaDto = pUsuarioPersonaDto.getPersonaDto();
         UsuarioDto usuarioDto = pUsuarioPersonaDto.getUsuarioDto();
         try {
+
+            Optional<UsuarioEntity>  objUsuario = iUsuarioDao.obtenerUsuarioPorLogin(pUsuarioPersonaDto.getUsuarioDto().getLogin());
+            if(objUsuario.isPresent()){
+                res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
+                res.setMensaje(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
+                return res;
+            }
+
             PersonaEntity insert = new PersonaEntity();
             insert.setGeneroId(personaDto.getGeneroId());
             insert.setNombres(personaDto.getNombres());
@@ -46,7 +54,7 @@ public class UsuarioService {
             insert.setEstadoId(ConstEstado.ACTIVO);
             iPersonaDao.save(insert);
 
-            // falta crear usuario
+
             UsuarioEntity insertU = new UsuarioEntity();
             insertU.setPersonaId(insert.getPersonaId());
             insertU.setAplicacionId(usuarioDto.getAplicacionId());
@@ -69,6 +77,47 @@ public class UsuarioService {
             res.setMensaje(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
         }
         return res;
+    }
+    public ResponseDto actualizarUsuarioPersona(PersonaDto pPersonaDto){
+        ResponseDto res = new ResponseDto();
+
+        try{
+            Optional<PersonaEntity> objPersona  =  iPersonaDao.obtenerPersonaPorID(pPersonaDto.getPersonaId());
+            Optional<UsuarioEntity> objUsuario = iUsuarioDao.obtenerUsuarioPorPersonaId(pPersonaDto.getPersonaId());
+
+            if(!objPersona.isPresent() || !objUsuario.isPresent()){
+                res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
+                res.setCodigo(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
+                return res;
+            }
+            PersonaEntity updatePersona = objPersona.get();
+            UsuarioEntity updateUsuario = objUsuario.get();
+
+            updatePersona.setGeneroId(pPersonaDto.getGeneroId());
+            updatePersona.setNombres(pPersonaDto.getNombres());
+            updatePersona.setApellidoPaterno(pPersonaDto.getApellidoPaterno());
+            updatePersona.setApellidoMaterno(pPersonaDto.getApellidoMaterno());
+            updatePersona.setNumeroDocumento(pPersonaDto.getNumeroDocumento());
+            updatePersona.setCiudadExpedidoId(pPersonaDto.getCiudadExpedidoId());
+            updatePersona.setComplemento(pPersonaDto.getComplemento());
+            updatePersona.setNumeroCelular(pPersonaDto.getNumeroCelular());
+            updatePersona.setCorreoElectronico(pPersonaDto.getCorreoElectronico());
+            updatePersona.setFechaNacimiento(FuncionesFechas.ConvertirStringToDate(pPersonaDto.getFechaNacimiento()));
+            iPersonaDao.save(updatePersona);
+
+            updateUsuario.setLogin(pPersonaDto.getNumeroDocumento());
+            iUsuarioDao.save(updateUsuario);
+
+
+            res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
+            res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
+            return res;
+        }catch (Exception ex){
+            res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
+            res.setCodigo(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
+            // seria ideal registrar log en BD
+            return res;
+        }
     }
     public ResponseDto autentication(Map objRequest ) {
         ResponseDto res = new ResponseDto();
@@ -95,6 +144,27 @@ public class UsuarioService {
             res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
             res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
             res.setElementoGenerico(PersonaEntityConvertToDto(personaEntity.get()));
+            return res;
+        }catch (Exception ex){
+            res.setCodigo(ConstDiccionarioMensaje.CODMW2000);
+            res.setCodigo(ConstDiccionarioMensaje.CODMW2000_MENSAJE);
+            return res;
+        }
+
+    }
+
+    public ResponseDto obtenerPersonaPorId(Long  pPersonaId ) {
+        ResponseDto res = new ResponseDto();
+        try{
+           if(pPersonaId<=0){
+               res.setCodigo(ConstDiccionarioMensaje.CODMW2007);
+               res.setMensaje(ConstDiccionarioMensaje.CODMW2007_MENSAJE);
+               return res;
+           }
+           Optional<PersonaEntity> objPersona =  iPersonaDao.obtenerPersonaPorID(pPersonaId);
+            res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
+            res.setMensaje(ConstDiccionarioMensaje.CODMW1000_MENSAJE);
+            res.setElementoGenerico(PersonaEntityConvertToDto(objPersona.get()));
             return res;
         }catch (Exception ex){
             res.setCodigo(ConstDiccionarioMensaje.CODMW2000);

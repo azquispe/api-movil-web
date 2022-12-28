@@ -51,7 +51,7 @@ public class SolicitudSeguroService {
                     (pSolicitudSeguroDto.getNombres() == null || pSolicitudSeguroDto.getNombres().trim().equals("")) ||
                             (pSolicitudSeguroDto.getApellidos() == null || pSolicitudSeguroDto.getApellidos().trim().equals("")) ||
                             (pSolicitudSeguroDto.getTelefonoCelular() == null || pSolicitudSeguroDto.getTelefonoCelular().trim().equals("")) ||
-                            (pSolicitudSeguroDto.getCiudad() == null || pSolicitudSeguroDto.getCiudad().trim().equals(""))
+                            (pSolicitudSeguroDto.getCiudadId()== null || pSolicitudSeguroDto.getCiudadId()<=0)
             ) {
 
                 res.setCodigo(ConstDiccionarioMensaje.CODMW2004);
@@ -97,7 +97,7 @@ public class SolicitudSeguroService {
             vBody.append("</tr>");
             vBody.append("<tr style='height: 18px;'>");
             vBody.append("<td style='width: 50%; height: 18px; '><strong>Ciudad</strong></td>");
-            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudSeguroDto.getCiudad() != null ? pSolicitudSeguroDto.getCiudad() : ""+  "</td>");
+            vBody.append("<td style='width: 50%; height: 18px;'>" + pSolicitudSeguroDto.getCiudadId() != null ? iDominioDao.getDominioByDominioId(  pSolicitudSeguroDto.getCiudadId()).get().getDescripcion()  : "" +  "</td>");
             vBody.append("</tr>");
             vBody.append("<tr style='height: 18px;'>");
             vBody.append("<td style='width: 50%; height: 18px; '><strong>Tiene algun seguro contratado con nosotros?</strong></td>");
@@ -145,7 +145,7 @@ public class SolicitudSeguroService {
                 objInsert.setNombres(pSolicitudSeguroDto.getNombres());
                 objInsert.setApellidos(pSolicitudSeguroDto.getApellidos());
                 objInsert.setTelefonoCelular(pSolicitudSeguroDto.getTelefonoCelular());
-                objInsert.setCiudad(pSolicitudSeguroDto.getCiudad());
+                objInsert.setCiudadId(pSolicitudSeguroDto.getCiudadId());
                 objInsert.setTipoProductoId(pSolicitudSeguroDto.getTipoProductoId());
                 objInsert.setCorreo(pSolicitudSeguroDto.getCorreo());
                 objInsert.setTieneSeguroNosotros(pSolicitudSeguroDto.isTieneSeguroNosotros());
