@@ -1,5 +1,6 @@
 package com.ganaseguros.apimovilweb.utils;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,5 +24,14 @@ public class FuncionesFechas {
     public static Date ConvertirStringToDate(String fecha) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return sdf.parse(fecha);
+    }
+    public static String ObtenerFechaActualParaNombreArchivo() {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("ddMMyyyyHHmmss");
+            String strDate = dateFormat.format(new Date());
+            return strDate;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }

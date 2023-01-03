@@ -31,3 +31,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 # conexion Firebase para envio de push
 url.firebase = https://fcm.googleapis.com
 
+# path para almacenar archivos
+url.file = G:/file_ganaseguros
+# url para descarga de archivos
+url.download_file = http://192.168.100.22:8001/api/app-web/v1/download-file
