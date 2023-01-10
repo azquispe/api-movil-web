@@ -22,7 +22,7 @@ public class DocumentoAdjuntoController {
     @Autowired
     private DocumentoAdjuntoService documentoAdjuntoService;
 
-    @PostMapping("/v1/upload-file/{pTipo}")
+    @PostMapping("/v1/cargar-archivo/{pTipo}")
     public ResponseEntity<?> uploadFile(@RequestParam("archivo") MultipartFile pArchivo, @PathVariable Long pTipo) {
         Map<String, Object> response = new HashMap<>();
         ResponseDto res = documentoAdjuntoService.insertarDocumentoAdjunto(pArchivo,pTipo);
@@ -33,7 +33,7 @@ public class DocumentoAdjuntoController {
             response.put("documentoAdjuntoId", res.getElementoGenerico());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
-    @GetMapping("/v1/download-file/{pDocumentoAdjuntoId}")
+    @GetMapping("/v1/descargar-archivo/{pDocumentoAdjuntoId}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long pDocumentoAdjuntoId){
         ResponseDto resDto =  documentoAdjuntoService.descargarDocumentoAdjunto(pDocumentoAdjuntoId);
         return  (ResponseEntity<byte[]>)resDto.getElementoGenerico();
