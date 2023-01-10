@@ -30,14 +30,13 @@ public class OfertaSliderService {
         try{
             OfertaSliderEntity insert = new OfertaSliderEntity();
             insert.setTitulo(pOfertaSliderDto.getTitulo());
+            insert.setSubtitulo(pOfertaSliderDto.getSubtitulo());
             insert.setContenido(pOfertaSliderDto.getContenido());
-            insert.setEnlace(pOfertaSliderDto.getEnlace());
             insert.setAplicacionId(pOfertaSliderDto.getAplicacionId());
+            insert.setDocumentoAdjuntoId(pOfertaSliderDto.getDocumentoAdjuntoId());
             insert.setFechaRegistro(new Date());
             insert.setEstadoId(ConstEstado.ACTIVO);
-
             iOfertaSliderDao.save(insert);
-
             if(pOfertaSliderDto.getAplicacionId().longValue()==1003l)
                 FuncionesGenericos.enviaPushAviso("OFERTA","Nuevo Oferta Registrado",baseUrl);
 
@@ -63,9 +62,10 @@ public class OfertaSliderService {
                 objDto = new OfertaSliderDto();
                 objDto.setOfertaSliderId(obj.getOfertaSliderId());
                 objDto.setTitulo(obj.getTitulo());
+                objDto.setSubtitulo(obj.getSubtitulo());
                 objDto.setContenido(obj.getContenido());
-                objDto.setEnlace(obj.getEnlace());
                 objDto.setAplicacionId(obj.getAplicacionId());
+                objDto.setDocumentoAdjuntoId(obj.getDocumentoAdjuntoId());
                 lstDto.add(objDto);
             }
             res.setCodigo(ConstDiccionarioMensaje.CODMW1000);
@@ -87,9 +87,10 @@ public class OfertaSliderService {
                 objDto = new OfertaSliderDto();
                 objDto.setOfertaSliderId(obj.getOfertaSliderId());
                 objDto.setTitulo(obj.getTitulo());
+                objDto.setSubtitulo(obj.getSubtitulo());
                 objDto.setContenido(obj.getContenido());
-                objDto.setEnlace(obj.getEnlace());
                 objDto.setAplicacionId(obj.getAplicacionId());
+                objDto.setDocumentoAdjuntoId(obj.getDocumentoAdjuntoId());
                 lstDto.add(objDto);
             }
             res.setCodigo(ConstDiccionarioMensaje.CODMW1000);

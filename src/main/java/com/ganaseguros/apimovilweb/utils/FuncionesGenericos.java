@@ -6,8 +6,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyFactory;
@@ -93,5 +95,31 @@ public class FuncionesGenericos {
         PrivateKey key = keyFactory.generatePrivate(keySpec);
         return key;
 
+    }
+    public static String  convertToBase64FromMultipartFile(InputStream  inputStream) throws IOException{
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            int n = 0;
+            while (-1!=(n=inputStream.read(buf)))
+            {
+                out.write(buf, 0, n);
+            }
+            out.close();
+        inputStream.close();
+        return Base64.getEncoder().encodeToString(out.toByteArray());
+    }
+    public static String  donwnloadUrlAndConverToBase64(String urlStr) throws IOException{
+        URL url = new URL(urlStr);
+        InputStream in = new BufferedInputStream(url.openStream());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024];
+        int n = 0;
+        while (-1!=(n=in.read(buf)))
+        {
+            out.write(buf, 0, n);
+        }
+        out.close();
+        in.close();
+        return Base64.getEncoder().encodeToString(out.toByteArray());
     }
 }

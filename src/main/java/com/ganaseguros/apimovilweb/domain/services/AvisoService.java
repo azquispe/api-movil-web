@@ -35,9 +35,10 @@ public class AvisoService {
                 objDto = new AvisoDto();
                 objDto.setAvisoId(obj.getAvisoId());
                 objDto.setTitulo(obj.getTitulo());
+                objDto.setSubtitulo(obj.getSubtitulo());
                 objDto.setContenido(obj.getContenido());
                 objDto.setFechaAviso(obj.getFechaAviso()!=null?FuncionesFechas.ConvertirDateToString(obj.getFechaAviso()):"" );
-                objDto.setEnlace(obj.getEnlace());
+                objDto.setDocumentoAdjuntoId(obj.getDocumentoAdjuntoId());
                 objDto.setAplicacionId(obj.getAplicacionId()); // 1002 web    1003 movil
                 lstDto.add(objDto);
             }
@@ -60,9 +61,10 @@ public class AvisoService {
                 objDto = new AvisoDto();
                 objDto.setAvisoId(obj.getAvisoId());
                 objDto.setTitulo(obj.getTitulo());
+                objDto.setSubtitulo(obj.getSubtitulo());
                 objDto.setContenido(obj.getContenido());
                 objDto.setFechaAviso(obj.getFechaAviso()!=null?FuncionesFechas.ConvertirDateToString(obj.getFechaAviso()):"" );
-                objDto.setEnlace(obj.getEnlace());
+                objDto.setDocumentoAdjuntoId(obj.getDocumentoAdjuntoId());
                 objDto.setAplicacionId(obj.getAplicacionId()); // 1002 web    1003 movil
                 lstDto.add(objDto);
             }
@@ -80,8 +82,9 @@ public class AvisoService {
         try{
             AvisoEntity insert = new AvisoEntity();
             insert.setTitulo(pAvisoDto.getTitulo());
+            insert.setSubtitulo(pAvisoDto.getSubtitulo());
             insert.setContenido(pAvisoDto.getContenido());
-            insert.setEnlace(pAvisoDto.getEnlace());
+            insert.setDocumentoAdjuntoId(pAvisoDto.getDocumentoAdjuntoId());
             insert.setAplicacionId(pAvisoDto.getAplicacionId());
             insert.setFechaAviso(new Date());
             insert.setFechaRegistro(new Date());

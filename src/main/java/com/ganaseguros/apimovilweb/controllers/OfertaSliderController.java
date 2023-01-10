@@ -17,7 +17,7 @@ import java.util.Map;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/app-web")
-public class OfertasController {
+public class OfertaSliderController {
 
 
     @Autowired
@@ -51,8 +51,6 @@ public class OfertasController {
         ResponseDto res = ofertaService.insertOfertaSlider(pOfertaSliderDto);
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
-        if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
-            response.put("avisos", res.getElementoGenerico());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
     @DeleteMapping("/v1/eliminar-ofertas/{pOfertaSliderID}")

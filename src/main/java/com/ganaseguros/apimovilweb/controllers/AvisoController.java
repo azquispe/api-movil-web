@@ -47,8 +47,6 @@ public class AvisoController {
         ResponseDto res = avisoService.insertAviso(pAvisoDto);
         response.put("codigoMensaje", res.getCodigo());
         response.put("mensaje", res.getMensaje());
-        if(res.getCodigo().equals(ConstDiccionarioMensaje.CODMW1000))
-            response.put("avisos", res.getElementoGenerico());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 

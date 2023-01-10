@@ -2,9 +2,7 @@ package com.ganaseguros.apimovilweb.domain.dto;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.util.Date;
 
 
@@ -12,8 +10,8 @@ import java.util.Date;
 public class OfertaSliderDto {
     private Long ofertaSliderId;
     private String titulo;
+    private String subtitulo;
     private String contenido;
-    private String enlace;
     private Long aplicacionId;
-
+    private Long documentoAdjuntoId;
 }

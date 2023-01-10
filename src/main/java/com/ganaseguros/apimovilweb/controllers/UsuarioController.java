@@ -38,6 +38,14 @@ public class UsuarioController {
         response.put("mensaje", res.getMensaje());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
+    @PutMapping("/v1/actualizar-clave")
+    public ResponseEntity<?> actualizarClave(@RequestBody Map objRequest) {
+        Map<String, Object> response = new HashMap<>();
+        ResponseDto res = usuarioService.actualizarClave(objRequest);
+        response.put("codigoMensaje", res.getCodigo());
+        response.put("mensaje", res.getMensaje());
+        return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+    }
     @PostMapping("/v1/autentication")
     public ResponseEntity<?> autentication(@RequestBody Map objRequest) {
         Map<String, Object> response = new HashMap<>();

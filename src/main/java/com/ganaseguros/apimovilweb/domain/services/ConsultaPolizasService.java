@@ -71,7 +71,7 @@ public class ConsultaPolizasService {
     public ResponseDto consultaPoliza(Map objRequest) {
 
         String vNroDocumento = objRequest.get("nroDocumento") != null ? objRequest.get("nroDocumento").toString() : "";
-        String vCiudadExpedido = objRequest.get("ciudadExpedido") != null ? objRequest.get("ciudadExpedido").toString() : ""; // de momento esto no se utiliza, el Servicio de Abel no usa
+        String vCiudadExpedido = objRequest.get("ciudadExpedido") != null ? objRequest.get("ciudadExpedido").toString() : ""; // de momento esto no se utiliza, el Servicio de SF no usa
         String vFechaNac = objRequest.get("fechaNacimiento") != null ? objRequest.get("fechaNacimiento").toString() : "";
         String vComplemento = objRequest.get("complemento") != null ? objRequest.get("complemento").toString() : "";
 

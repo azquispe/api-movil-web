@@ -16,10 +16,14 @@ public class OfertaSliderEntity {
     private Long ofertaSliderId;
     @Column(name = "titulo")
     private String titulo;
+    @Column(name = "subtitulo")
+    private String subtitulo;
     @Column(name = "contenido")
     private String contenido;
-    @Column(name = "enlace")
-    private String enlace;
+
+    @Column(name = "documento_adjunto_id")
+    private Long documentoAdjuntoId;
+
     @Column(name = "aplicacion_id")
     private Long aplicacionId;
     @Column(name = "fecha_registro")

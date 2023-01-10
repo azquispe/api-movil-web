@@ -10,13 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
-public class FilesStorageService {
+public class DocumentoStorageService {
 
     @Value("${url.file}")
     private String urlFile;

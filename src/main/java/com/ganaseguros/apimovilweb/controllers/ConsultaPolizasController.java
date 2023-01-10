@@ -24,9 +24,7 @@ public class ConsultaPolizasController {
 
     @PostMapping("/v1/consulta-poliza")
     public ResponseEntity<?> consultaSegip(@RequestBody Map objRequest) {
-
         Map<String, Object> response = new HashMap<>();
-
         //List<Map<String, Object>> lstPolizas = appMovilService.consultaPoliza(vCi, vExtension,vFechaNac,vComplemento);
         ResponseDto res = consultaPolizasService.consultaPoliza( objRequest);
         response.put("codigoMensaje", res.getCodigo());
@@ -40,7 +38,6 @@ public class ConsultaPolizasController {
 
     @GetMapping("/v1/descargar-poliza/{pPolicyId}")
     public ResponseEntity<?> descargarPoliza(@PathVariable String pPolicyId) {
-
         Map<String, Object> response = new HashMap<>();
         ResponseDto res = consultaPolizasService.descargarPoliza(pPolicyId);
         response.put("codigoMensaje", res.getCodigo());
